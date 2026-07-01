@@ -1,0 +1,37 @@
+{
+  "name": "pairspace",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/web",
+    "services/api"
+  ],
+  "scripts": {
+    "dev:api": "npm run dev --workspace=services/api",
+    "dev:web": "npm run dev --workspace=apps/web",
+    "dev": "concurrently \"npm run dev:api\" \"npm run dev:web\"",
+    "test": "node --experimental-vm-modules node_modules/.bin/jest --config=tests/jest.config.json --forceExit --detectOpenHandles",
+    "test:watch": "node --experimental-vm-modules node_modules/.bin/jest --config=tests/jest.config.json --watch",
+    "test:coverage": "node --experimental-vm-modules node_modules/.bin/jest --config=tests/jest.config.json --coverage --forceExit",
+    "seed:demo": "node scripts/seedDemoData.js",
+    "seed:reset": "node scripts/resetDemoData.js",
+    "start": "pm2 start ecosystem.config.js --env production",
+    "stop": "pm2 stop pairspace-api",
+    "logs": "pm2 logs pairspace-api",
+    "build:web": "npm run build --workspace=apps/web",
+    "db:verify": "node scripts/verifyIndexes.js",
+    "db:check": "node scripts/checkDataIntegrity.js",
+    "db:backup": "node scripts/backupMongo.js",
+    "db:restore": "node scripts/restoreBackup.js",
+    "db:cleanup": "node scripts/retentionCleanup.js"
+  },
+  "devDependencies": {
+    "@jest/globals": "^30.3.0",
+    "concurrently": "^8.2.2",
+    "jest": "^30.3.0",
+    "mongodb-memory-server": "^11.0.1",
+    "socket.io-client": "^4.8.3",
+    "supertest": "^7.2.2"
+  }
+}

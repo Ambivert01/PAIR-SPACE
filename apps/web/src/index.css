@@ -1,0 +1,12 @@
+/* PairSpace — Global Stylesheet
+ * Single design system: see ./styles/theme.css for all tokens/utilities.
+ */
+@import './styles/theme.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Landing page specific (kept minimal, defers to theme.css tokens) */
+.landing-page { scroll-behavior: smooth; }
+.landing-page section { position: relative; }
