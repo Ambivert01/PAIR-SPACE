@@ -46,11 +46,14 @@ export default function MemoryCardUltra({
     return (
       <motion.div
         onClick={() => onClick(memory)}
-        className="glass p-6 rounded-2xl cursor-pointer relative overflow-hidden group"
+        className="cursor-pointer relative overflow-hidden group rounded-2xl"
+        style={{ background: "linear-gradient(135deg, rgba(255,93,126,0.10), rgba(168,85,247,0.08))", border: "1px solid rgba(255,93,126,0.2)" }}
         {...scaleIn}
-        whileHover={{ y: -5, scale: 1.02 }}
-        transition={{ duration: 0.3 }}
+        whileHover={{ y: -4, scale: 1.02, boxShadow: "0 8px 32px rgba(255,93,126,0.15)" }}
+        transition={{ duration: 0.25 }}
       >
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[var(--accent-love)]/40 to-transparent" />
+        <div className="p-5">
         {/* Pinned indicator */}
         {memory.pinned && (
           <motion.span
@@ -74,35 +77,18 @@ export default function MemoryCardUltra({
           "{memory.description || memory.title}"
         </p>
 
-        {/* Footer */}
-        <div className="hstack-md justify-between mt-4 pt-3 border-t border-[var(--glass-border)]">
-          <span className="text-xs text-[var(--text-tertiary)]">
-            {typeEmoji} Note
-          </span>
-          <div className="hstack-sm">
-            {memory.reactions?.length > 0 && (
-              <span className="text-xs text-[var(--text-secondary)]">
-                {memory.reactions[0].emoji}
-                {memory.reactions.length > 1
-                  ? ` +${memory.reactions.length - 1}`
-                  : ""}
-              </span>
-            )}
-            <motion.button
-              onClick={(e) => {
-                e.stopPropagation();
-                onFavorite(memory._id);
-              }}
-              className={`text-sm transition-colors ${
-                isFav
-                  ? "text-[var(--accent-love)]"
-                  : "text-[var(--text-tertiary)]"
-              }`}
-              whileHover={{ scale: 1.2 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              {isFav ? "❤️" : "🤍"}
-            </motion.button>
+          <div className="flex items-center justify-between mt-4 pt-3 border-t border-white/10">
+            <span className="text-xs text-[var(--text-tertiary)]">{typeEmoji} Note</span>
+            <div className="flex items-center gap-2">
+              {memory.reactions?.length > 0 && (
+                <span className="text-xs text-[var(--text-secondary)]">{memory.reactions[0].emoji}{memory.reactions.length > 1 ? ` +${memory.reactions.length - 1}` : ""}</span>
+              )}
+              <motion.button onClick={e => { e.stopPropagation(); onFavorite(memory._id); }}
+                className={`text-sm transition-colors ${isFav ? "text-[var(--accent-love)]" : "text-[var(--text-tertiary)]"}`}
+                whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.9 }}>
+                {isFav ? "❤️" : "🤍"}
+              </motion.button>
+            </div>
           </div>
         </div>
       </motion.div>
@@ -113,10 +99,11 @@ export default function MemoryCardUltra({
   return (
     <motion.div
       onClick={() => onClick(memory)}
-      className="card-glass overflow-hidden cursor-pointer group relative"
+      className="overflow-hidden cursor-pointer group relative rounded-2xl"
+      style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }}
       {...scaleIn}
-      whileHover={{ y: -5, scale: 1.02 }}
-      transition={{ duration: 0.3 }}
+      whileHover={{ y: -4, scale: 1.02, boxShadow: "0 12px 40px rgba(168,85,247,0.2)" }}
+      transition={{ duration: 0.25 }}
     >
       {/* Media preview */}
       {thumb ? (

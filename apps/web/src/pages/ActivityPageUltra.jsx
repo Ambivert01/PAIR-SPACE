@@ -1,10 +1,4 @@
-/**
- * ActivityPageUltra Component
- *
- * Premium activity page orchestrating all ultra components
- */
-
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRelationship } from "../context/RelationshipProvider.jsx";
@@ -81,65 +75,43 @@ export default function ActivityPageUltra() {
   const isTimer = activity && TIMER_TYPES.includes(activity.activityType);
   const isPlayer = activity && PLAYER_TYPES.includes(activity.activityType);
 
-  // Loading state
-  if (!rel) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)]">
-        <motion.div
-          className="stack-md items-center"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-        >
-          <motion.div
-            className="w-8 h-8 border-2 border-[var(--accent-dream)] border-t-transparent rounded-full"
-            animate={{ rotate: 360 }}
-            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-          />
-          <p className="text-[var(--text-secondary)] text-sm">
-            Loading activities...
-          </p>
-        </motion.div>
-      </div>
-    );
-  }
+  if (!rel) return (
+    <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)]">
+      <motion.div className="flex flex-col items-center gap-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+        <motion.div className="w-8 h-8 border-2 border-[var(--accent-dream)] border-t-transparent rounded-full" animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }} />
+        <p className="text-[var(--text-secondary)] text-sm">Loading activities...</p>
+      </motion.div>
+    </div>
+  );
 
   return (
-    <div className="h-screen flex flex-col bg-[var(--bg-primary)] text-white">
+    <div className="h-screen flex flex-col bg-[var(--bg-primary)] text-white relative overflow-hidden">
+      {/* Ambient */}
+      <div className="floating-orb floating-orb-dream w-64 h-64 -top-16 -right-16 opacity-20 pointer-events-none" />
+      <div className="floating-orb floating-orb-love w-48 h-48 bottom-0 -left-12 opacity-15 pointer-events-none" style={{ animationDelay: "6s" }} />
+
       {/* Header */}
-      <motion.div
-        className="hstack-md px-4 py-4 glass-border border-b glass-strong"
+      <motion.header
+        className="glass-strong flex items-center gap-3 px-4 py-3.5 border-b border-[var(--glass-border)] sticky top-0 z-20"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <motion.button
-          onClick={() => navigate("/relationship")}
-          className="text-[var(--text-secondary)] hover:text-white transition-colors"
-          whileHover={{ scale: 1.1, x: -2 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          ←
+        <motion.button onClick={() => navigate("/relationship")}
+          className="w-9 h-9 glass rounded-xl flex items-center justify-center text-[var(--text-secondary)] hover:text-white transition-all flex-shrink-0"
+          whileHover={{ scale: 1.08, x: -2 }} whileTap={{ scale: 0.93 }} aria-label="Go back">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
         </motion.button>
-        <h1 className="text-base font-semibold flex-1">
-          {activity
-            ? activity.metadata?.title ||
-              activity.activityType.replace(/_/g, " ")
-            : "Activities"}
-        </h1>
+        <div className="flex-1 min-w-0">
+          <h1 className="text-sm font-semibold text-white truncate">{activity ? (activity.metadata?.title || activity.activityType.replace(/_/g, " ")) : "Activities"}</h1>
+          {activity && <p className="text-[11px] text-[var(--text-tertiary)] mt-0.5">In progress</p>}
+        </div>
         {!connected && (
-          <motion.div
-            className="hstack-sm"
-            animate={{ opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            <motion.div
-              className="w-2 h-2 bg-yellow-500 rounded-full"
-              animate={{ scale: [1, 1.3, 1] }}
-              transition={{ duration: 1, repeat: Infinity }}
-            />
-            <span className="text-xs text-yellow-500">Connecting...</span>
+          <motion.div className="flex items-center gap-1.5" animate={{ opacity: [0.5, 1, 0.5] }} transition={{ duration: 2, repeat: Infinity }}>
+            <motion.div className="w-2 h-2 bg-yellow-400 rounded-full" animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 1, repeat: Infinity }} />
+            <span className="text-xs text-yellow-400 font-medium">Connecting...</span>
           </motion.div>
         )}
-      </motion.div>
+      </motion.header>
 
       {/* Incoming invite overlay */}
       <AnimatePresence>

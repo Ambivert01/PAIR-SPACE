@@ -689,3 +689,104 @@ input:focus, textarea:focus, select:focus {
 
 .smooth-scroll { scroll-behavior: smooth; }
 .no-select { user-select: none; -webkit-user-select: none; }
+
+/* ============================================================
+   19. ENHANCED CARD & INTERACTIVE POLISH
+   ============================================================ */
+
+/* Stronger card hover with subtle glow */
+.card-glass:hover {
+  background: var(--glass-bg-strong);
+  border-color: var(--glass-border-strong);
+  box-shadow: var(--shadow-medium), 0 0 0 1px rgba(255,255,255,0.04);
+}
+
+/* Sidebar active indicator */
+.sidebar-active {
+  background: rgba(168, 85, 247, 0.1);
+  color: white;
+}
+
+/* Pill tab active underline */
+.tab-active-line {
+  background: linear-gradient(90deg, var(--accent-love), var(--accent-dream));
+}
+
+/* Input focus glow — love accent variant */
+.input-field:focus {
+  border-color: var(--accent-dream-soft);
+  background: var(--glass-bg-strong);
+  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.15), 0 0 16px rgba(168, 85, 247, 0.08);
+}
+
+/* Glass button with icon */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-lg);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  transition: all var(--motion-fast);
+  cursor: pointer;
+}
+.icon-btn:hover {
+  background: var(--glass-bg-strong);
+  border-color: var(--glass-border-strong);
+  color: white;
+  transform: translateY(-1px);
+}
+.icon-btn:active { transform: scale(0.94); }
+
+/* Section divider with gradient */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--glass-border-strong), transparent);
+  margin: var(--space-lg) 0;
+}
+
+/* Glow ring on focus for interactive cards */
+.card-interactive:focus-visible {
+  outline: 2px solid var(--accent-dream-soft);
+  outline-offset: 2px;
+}
+
+/* Scrollbar hide utility */
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+
+/* Gradient border utility */
+.gradient-border {
+  position: relative;
+}
+.gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: var(--gradient-mixed);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Ambient page background with subtle noise texture feel */
+.page-ambient {
+  background:
+    var(--gradient-radial-ambient),
+    var(--bg-primary);
+  background-attachment: fixed;
+}
+
+/* Status dot */
+.status-dot-online  { background: var(--status-success); box-shadow: 0 0 6px var(--status-success); }
+.status-dot-offline { background: var(--text-disabled); }
+.status-dot-away    { background: var(--status-warning); box-shadow: 0 0 6px var(--status-warning); }

@@ -1,90 +1,86 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import { useRelationship } from "../context/RelationshipProvider.jsx";
 import { listStories, generateStory } from "../features/story/storyService.js";
 import StoryTimeline from "../features/story/StoryTimeline.jsx";
 import StoryReader from "../features/story/StoryReader.jsx";
+import PageLayout, { PageSpinner, PageEmpty, SectionLabel } from "../components/PageLayout.jsx";
 
 const STORY_TYPES = [
-  { value: "monthly",     label: "This Month",  emoji: "📅" },
-  { value: "journey",     label: "Our Journey", emoji: "💑" },
-  { value: "anniversary", label: "Anniversary", emoji: "🎉" },
+  { value: "monthly",     label: "This Month",  emoji: "📅", color: "var(--accent-dream)" },
+  { value: "journey",     label: "Our Journey", emoji: "💑", color: "var(--accent-love)" },
+  { value: "anniversary", label: "Anniversary", emoji: "🎉", color: "var(--accent-glow)" },
 ];
 
 export default function StoryPage() {
-  const navigate = useNavigate();
-  const { rel, loading: relLoading } = useRelationship();
-  const [stories, setStories]   = useState([]);
-  const [loading, setLoading]   = useState(true);
-  const [generating, setGen]    = useState(false);
+  const { rel } = useRelationship();
+  const [stories, setStories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [generating, setGen] = useState(false);
   const [genError, setGenError] = useState("");
   const [selected, setSelected] = useState(null);
 
-
   useEffect(() => {
     if (!rel) return;
-    listStories(rel.id)
-      .then(({ stories: s }) => setStories(s))
-      .catch(() => {})
-      .finally(() => setLoading(false));
+    listStories(rel.id).then(({ stories: s }) => setStories(s)).catch(() => {}).finally(() => setLoading(false));
   }, [rel]);
 
   const handleGenerate = async (type) => {
     setGen(true); setGenError("");
     try {
       const story = await generateStory(rel.id, type);
-      setStories((prev) => [story, ...prev]);
+      setStories(prev => [story, ...prev]);
       setSelected(story);
     } catch (err) {
       setGenError(err.response?.data?.message || "Not enough data yet. Keep building your story!");
     } finally { setGen(false); }
   };
 
-  const handleUpdated = (updated) =>
-    setStories((prev) => prev.map((s) => s._id === updated._id ? updated : s));
+  const handleUpdated = (updated) => setStories(prev => prev.map(s => s._id === updated._id ? updated : s));
 
-  if (selected)
-    return <StoryReader story={selected} onClose={() => setSelected(null)} onUpdated={handleUpdated} />;
+  if (selected) return <StoryReader story={selected} onClose={() => setSelected(null)} onUpdated={handleUpdated} />;
 
   return (
-    <div className="min-h-screen bg-[var(--bg-primary)] text-white flex flex-col">
-      <div className="flex items-center gap-3 px-4 py-4 border-b border-[var(--glass-border)] sticky top-0 bg-[var(--bg-primary)] z-10">
-        <button onClick={() => navigate("/relationship")} className="text-[var(--text-tertiary)] hover:text-white transition-colors">←</button>
-        <h1 className="text-base font-semibold flex-1">Our Story</h1>
-      </div>
-
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-6">
-        <div className="space-y-3">
-          <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider">Generate a story</p>
-          <div className="flex gap-2 flex-wrap">
-            {STORY_TYPES.map((t) => (
-              <button key={t.value} onClick={() => handleGenerate(t.value)} disabled={generating}
-                className="flex items-center gap-2 bg-[var(--glass-bg)] hover:bg-[var(--glass-bg-strong)] border border-[var(--glass-border)] hover:border-[var(--accent-dream-soft)] rounded-xl px-4 py-2.5 text-sm text-[var(--text-secondary)] transition-all disabled:opacity-50">
-                <span>{t.emoji}</span><span>{t.label}</span>
-              </button>
-            ))}
+    <PageLayout title="Our Story" subtitle="AI-generated relationship narratives" icon="📖" accent="glow">
+      <div className="overflow-y-auto px-4 py-5 space-y-6">
+        {/* Generate section */}
+        <div className="card-glass relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-[var(--accent-glow)]/10 to-[var(--accent-dream)]/10 pointer-events-none" />
+          <div className="relative z-10 space-y-4">
+            <div>
+              <p className="text-sm font-semibold text-white">Generate a story</p>
+              <p className="text-xs text-[var(--text-tertiary)] mt-0.5">AI writes your relationship narrative</p>
+            </div>
+            <div className="flex gap-2 flex-wrap">
+              {STORY_TYPES.map(t => (
+                <motion.button key={t.value} onClick={() => handleGenerate(t.value)} disabled={generating}
+                  className="flex items-center gap-2 glass hover:bg-white/10 border border-[var(--glass-border)] hover:border-[var(--glass-border-strong)] rounded-xl px-4 py-2.5 text-sm text-[var(--text-secondary)] transition-all disabled:opacity-50 font-medium"
+                  whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.97 }}>
+                  <span>{t.emoji}</span><span>{t.label}</span>
+                </motion.button>
+              ))}
+            </div>
+            {generating && (
+              <motion.div className="flex items-center gap-2" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                <motion.div className="w-4 h-4 border-2 border-[var(--accent-dream)] border-t-transparent rounded-full" animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }} />
+                <p className="text-xs text-[var(--accent-dream-soft)]">Writing your story...</p>
+              </motion.div>
+            )}
+            {genError && <p className="text-xs text-yellow-400 bg-yellow-400/10 rounded-lg px-3 py-2">{genError}</p>}
           </div>
-          {generating && <p className="text-xs text-[var(--accent-dream-soft)] animate-pulse">Writing your story...</p>}
-          {genError && <p className="text-xs text-yellow-500">{genError}</p>}
         </div>
 
-        {loading ? (
-          <div className="flex justify-center py-12">
-            <div className="w-6 h-6 border-2 border-[var(--accent-dream-soft)] border-t-transparent rounded-full animate-spin" />
-          </div>
-        ) : stories.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 space-y-3">
-            <span className="text-5xl">📖</span>
-            <p className="text-[var(--text-tertiary)] text-sm text-center">Your story hasn't been written yet.</p>
-            <p className="text-gray-700 text-xs text-center">Generate your first story above.</p>
-          </div>
-        ) : (
+        {/* Stories list */}
+        {loading ? <PageSpinner label="Loading stories..." /> :
+         stories.length === 0 ? (
+          <PageEmpty icon="📖" title="Your story hasn't been written yet" desc="Generate your first story above to see your relationship narrative." />
+         ) : (
           <div className="space-y-3">
-            <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider">Your stories</p>
+            <SectionLabel>Your stories</SectionLabel>
             <StoryTimeline stories={stories} onSelect={setSelected} />
           </div>
-        )}
+         )}
       </div>
-    </div>
+    </PageLayout>
   );
 }

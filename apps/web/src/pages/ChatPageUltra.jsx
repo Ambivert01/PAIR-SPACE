@@ -273,7 +273,8 @@ export default function ChatPageUltra() {
   }
 
   return (
-    <div className="h-screen flex flex-col bg-[var(--bg-primary)] text-white">
+    <div className="h-screen flex flex-col text-white relative overflow-hidden"
+      style={{ background: "radial-gradient(ellipse at 15% 10%, rgba(255,93,126,0.15) 0%, transparent 45%), radial-gradient(ellipse at 85% 85%, rgba(168,85,247,0.13) 0%, transparent 50%), #120a17" }}>
       <ChatHeaderUltra partner={rel.partner} partnerPresence={partnerPresence} onSetStatus={setStatus} />
 
       <AnimatePresence>

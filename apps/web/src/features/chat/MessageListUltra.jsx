@@ -118,11 +118,10 @@ export default function MessageListUltra({
 
   return (
     <div className="flex-1 relative overflow-hidden">
-      {/* Messages container */}
       <div
         ref={containerRef}
         onScroll={handleScroll}
-        className="absolute inset-0 overflow-y-auto px-4 py-4"
+        className="absolute inset-0 overflow-y-auto px-3 py-4"
         style={{ scrollBehavior: "smooth" }}
       >
         {/* Loading older messages indicator */}
@@ -161,33 +160,20 @@ export default function MessageListUltra({
         )}
 
         {/* Messages grouped by date */}
-        <div>
+        <div className="space-y-1">
           {groupedMessages.map((group) => (
             <div key={group.date}>
-              {/* Date separator */}
               <DateSeparator date={group.date} />
-
-              {/* Messages for this date */}
-              <div className="space-y-0.5">
+              <div className="space-y-0.5 mt-1">
                 {group.messages.map((msg, idx) => {
                   const prevMsg = group.messages[idx - 1];
-                  const showAvatar =
-                    !prevMsg ||
-                    prevMsg.senderId?.toString() !== msg.senderId?.toString();
-
+                  const showAvatar = !prevMsg || prevMsg.senderId?.toString() !== msg.senderId?.toString();
                   return (
-                    <MessageBubbleUltra
-                      key={msg._id}
-                      message={msg}
+                    <MessageBubbleUltra key={msg._id} message={msg}
                       isOwn={msg.senderId?.toString() === currentUserId}
-                      currentUserId={currentUserId}
-                      showAvatar={showAvatar}
-                      onReply={onReply}
-                      onEdit={onEdit}
-                      onDelete={onDelete}
-                      onReact={onReact}
-                      onRemoveReaction={onRemoveReaction}
-                    />
+                      currentUserId={currentUserId} showAvatar={showAvatar}
+                      onReply={onReply} onEdit={onEdit} onDelete={onDelete}
+                      onReact={onReact} onRemoveReaction={onRemoveReaction} />
                   );
                 })}
               </div>

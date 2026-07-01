@@ -1,33 +1,47 @@
+import { motion } from "framer-motion";
+
 const GAMES = [
-  { type: "tic_tac_toe",           emoji: "🎮", label: "Tic Tac Toe",       desc: "Classic 3×3 grid" },
-  { type: "truth_or_dare",         emoji: "🎲", label: "Truth or Dare",      desc: "Reveal secrets" },
-  { type: "this_or_that",          emoji: "🤔", label: "This or That",       desc: "Pick your preference" },
-  { type: "compatibility_quiz",    emoji: "💑", label: "Compatibility Quiz", desc: "How well matched?" },
-  { type: "daily_question_game",   emoji: "💬", label: "Daily Question",     desc: "Today's question" },
-  { type: "emoji_story_game",      emoji: "😊", label: "Emoji Story",        desc: "Build a story together" },
-  { type: "draw_and_guess",        emoji: "🎨", label: "Draw & Guess",       desc: "Draw, partner guesses" },
-  { type: "future_prediction_game",emoji: "🔮", label: "Future Predictions", desc: "Dream together" },
-  { type: "custom_prompt_game",    emoji: "✨", label: "Custom Game",        desc: "Your own prompt" },
+  { type: "tic_tac_toe",            emoji: "🎮", label: "Tic Tac Toe",       desc: "Classic 3×3 grid",        color: "var(--accent-dream)" },
+  { type: "truth_or_dare",          emoji: "🎲", label: "Truth or Dare",      desc: "Reveal secrets",          color: "var(--accent-love)" },
+  { type: "this_or_that",           emoji: "🤔", label: "This or That",       desc: "Pick your preference",    color: "var(--accent-glow)" },
+  { type: "compatibility_quiz",     emoji: "💑", label: "Compatibility Quiz", desc: "How well matched?",       color: "var(--accent-love)" },
+  { type: "daily_question_game",    emoji: "💬", label: "Daily Question",     desc: "Today's question",        color: "var(--accent-dream)" },
+  { type: "emoji_story_game",       emoji: "😊", label: "Emoji Story",        desc: "Build a story together",  color: "var(--accent-glow)" },
+  { type: "draw_and_guess",         emoji: "🎨", label: "Draw & Guess",       desc: "Draw, partner guesses",   color: "var(--accent-dream)" },
+  { type: "future_prediction_game", emoji: "🔮", label: "Future Predictions", desc: "Dream together",          color: "var(--accent-love)" },
+  { type: "custom_prompt_game",     emoji: "✨", label: "Custom Game",        desc: "Your own prompt",         color: "var(--accent-glow)" },
 ];
 
 export default function GamesHub({ onStart }) {
   return (
-    <div className="flex flex-col h-full">
-      <div className="px-4 py-4 border-b border-[var(--glass-border)]">
-        <h2 className="text-base font-semibold text-white">Play Together</h2>
-        <p className="text-xs text-[var(--text-tertiary)] mt-0.5">Choose a game to start</p>
+    <div className="px-4 py-5 space-y-4">
+      <div className="text-center space-y-1 pb-2">
+        <p className="text-[var(--text-tertiary)] text-sm">Choose a game to play together</p>
       </div>
-      <div className="flex-1 overflow-y-auto p-4 grid grid-cols-2 gap-3">
-        {GAMES.map((g) => (
-          <button
+      <div className="grid grid-cols-2 gap-3">
+        {GAMES.map((g, i) => (
+          <motion.button
             key={g.type}
             onClick={() => onStart(g.type)}
-            className="flex flex-col items-center gap-2 p-4 bg-[var(--glass-bg)] rounded-2xl border border-[var(--glass-border)] hover:border-[var(--accent-dream-soft)] hover:bg-indigo-900/20 transition-all text-center"
+            className="card-glass card-interactive flex flex-col items-center gap-3 p-5 relative overflow-hidden text-center"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.04, type: "spring", stiffness: 200 }}
+            whileHover={{ scale: 1.05, y: -4 }}
+            whileTap={{ scale: 0.95 }}
           >
-            <span className="text-3xl">{g.emoji}</span>
-            <p className="text-xs font-medium text-[var(--text-primary)]">{g.label}</p>
-            <p className="text-[10px] text-[var(--text-disabled)]">{g.desc}</p>
-          </button>
+            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
+            <div
+              className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0"
+              style={{ background: `${g.color}20`, border: `1px solid ${g.color}30` }}
+            >
+              <span className="text-2xl">{g.emoji}</span>
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-white leading-tight">{g.label}</p>
+              <p className="text-[11px] text-[var(--text-tertiary)] mt-0.5">{g.desc}</p>
+            </div>
+          </motion.button>
         ))}
       </div>
     </div>

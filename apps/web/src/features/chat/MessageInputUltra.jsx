@@ -134,14 +134,14 @@ export default function MessageInputUltra({
         )}
       </AnimatePresence>
 
-      {/* Input bar */}
-      <div className="px-4 py-3 glass-strong border-t border-[var(--glass-border)]">
+      <div className="px-3 py-3" style={{ background: "rgba(18,10,23,0.95)", borderTop: "1px solid rgba(255,255,255,0.08)", backdropFilter: "blur(20px)" }}>
         <div
-          className={`flex items-end gap-2 glass rounded-full px-2 py-2 transition-all duration-300 ${
+          className={`flex items-end gap-2 rounded-2xl px-3 py-2 transition-all duration-300 ${
             isFocused
               ? "border-2 border-[var(--accent-dream)] shadow-glow-dream"
               : "border border-[var(--glass-border)]"
           }`}
+          style={{ background: "rgba(255,255,255,0.06)" }}
         >
           {/* Attachment button */}
           <motion.button

@@ -1,31 +1,15 @@
-/**
- * TimelinePageUltra Component
- *
- * Premium memory timeline with emotional scrapbook design
- */
-
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useRelationship } from "../context/RelationshipProvider.jsx";
 import { useCurrentUserId } from "../hooks/useCurrentUserId.js";
-import {
-  getTimeline,
-  togglePin,
-  toggleFavorite,
-  reactToMemory,
-  searchMemories,
-} from "../features/memory/memoryService.js";
-import {
-  fadeIn,
-  fadeUp,
-  staggerContainer,
-  staggerItem,
-} from "../utils/motionPresets.js";
+import { getTimeline, togglePin, toggleFavorite, reactToMemory, searchMemories } from "../features/memory/memoryService.js";
+import { fadeUp } from "../utils/motionPresets.js";
 import MemoryCardUltra from "../features/memory/MemoryCardUltra.jsx";
 import MemoryCreateModalUltra from "../features/memory/MemoryCreateModalUltra.jsx";
 import MemoryDetailModalUltra from "../features/memory/MemoryDetailModalUltra.jsx";
 import MemoryFilterBarUltra from "../features/memory/MemoryFilterBarUltra.jsx";
+import PageLayout, { PageSpinner, PageEmpty } from "../components/PageLayout.jsx";
 
 export default function TimelinePageUltra() {
   const navigate = useNavigate();
@@ -153,200 +137,83 @@ export default function TimelinePageUltra() {
   // Pinned memories
   const pinnedMemories = memories.filter((m) => m.pinned);
 
-  // Loading state
-  if (!rel) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)]">
-        <motion.div
-          className="flex flex-col items-center gap-3"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-        >
-          <motion.div
-            className="w-8 h-8 border-2 border-[var(--accent-dream)] border-t-transparent rounded-full"
-            animate={{ rotate: 360 }}
-            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-          />
-          <p className="text-[var(--text-secondary)] text-sm">
-            Loading memories...
-          </p>
-        </motion.div>
-      </div>
-    );
-  }
+  if (!rel) return (
+    <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)]">
+      <PageSpinner label="Loading memories..." />
+    </div>
+  );
+
+  const viewToggle = (
+    <div className="flex items-center gap-1 glass rounded-xl p-1">
+      <motion.button onClick={() => setViewMode("timeline")}
+        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${viewMode === "timeline" ? "bg-[var(--accent-dream)] text-white" : "text-[var(--text-secondary)] hover:text-white"}`}
+        whileTap={{ scale: 0.95 }}>📖</motion.button>
+      <motion.button onClick={() => setViewMode("grid")}
+        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${viewMode === "grid" ? "bg-[var(--accent-dream)] text-white" : "text-[var(--text-secondary)] hover:text-white"}`}
+        whileTap={{ scale: 0.95 }}>⊞</motion.button>
+    </div>
+  );
 
   return (
-    <div className="min-h-screen bg-[var(--bg-primary)] text-white flex flex-col relative overflow-hidden">
-      {/* Header */}
-      <motion.div
-        className="glass-strong flex items-center gap-3 px-4 py-4 border-b border-[var(--glass-border)] sticky top-0 z-30"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        <motion.button
-          onClick={() => navigate("/relationship")}
-          className="text-[var(--text-secondary)] hover:text-white transition-colors"
-          whileHover={{ scale: 1.1, x: -2 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          ←
-        </motion.button>
-        <div className="flex-1">
-          <h1 className="text-base font-semibold">Our Story</h1>
-          <p className="text-xs text-[var(--text-tertiary)]">
-            {memories.length} {memories.length === 1 ? "memory" : "memories"}
-          </p>
+    <PageLayout
+      title="Memories"
+      subtitle={`${memories.length} ${memories.length === 1 ? "memory" : "memories"}`}
+      icon="📸"
+      accent="dream"
+      noPad
+      headerRight={
+        <div className="flex items-center gap-2">
+          {viewToggle}
+          <motion.button onClick={() => setShowCreate(true)} className="btn-primary btn-base text-xs px-4 py-2" whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>+ Memory</motion.button>
         </div>
-
-        {/* View mode toggle */}
-        <div className="hstack-sm glass rounded-lg p-1">
-          <motion.button
-            onClick={() => setViewMode("timeline")}
-            className={`px-2 py-1 rounded text-xs transition-colors ${
-              viewMode === "timeline"
-                ? "bg-[var(--accent-dream)] text-white"
-                : "text-[var(--text-secondary)]"
-            }`}
-            whileTap={{ scale: 0.95 }}
-          >
-            📖
-          </motion.button>
-          <motion.button
-            onClick={() => setViewMode("grid")}
-            className={`px-2 py-1 rounded text-xs transition-colors ${
-              viewMode === "grid"
-                ? "bg-[var(--accent-dream)] text-white"
-                : "text-[var(--text-secondary)]"
-            }`}
-            whileTap={{ scale: 0.95 }}
-          >
-            ⊞
-          </motion.button>
-        </div>
-
-        <motion.button
-          onClick={() => setShowCreate(true)}
-          className="btn-primary btn-base"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          + Memory
-        </motion.button>
-      </motion.div>
-
-      {/* Search */}
-      <motion.form
-        onSubmit={handleSearch}
-        className="px-4 py-3 glass border-b border-[var(--glass-border)]"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.1 }}
-      >
-        <div className="flex gap-2">
-          <input
-            value={searchQ}
-            onChange={(e) => {
-              setSearchQ(e.target.value);
-              if (!e.target.value) {
-                setFilters({ emotion: "", type: "", pinned: "" });
-              }
-            }}
-            placeholder="Search memories..."
-            className="flex-1 glass rounded-xl px-4 py-2 text-sm text-white placeholder-[var(--text-tertiary)] outline-none focus-ring transition-all"
-          />
-          <motion.button
-            type="submit"
-            disabled={searching}
-            className="glass-strong rounded-xl px-4 py-2 text-sm transition-colors disabled"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            {searching ? "..." : "🔍"}
-          </motion.button>
-        </div>
-      </motion.form>
-
-      {/* Filters */}
-      <MemoryFilterBarUltra filters={filters} onChange={setFilters} />
-
-      {/* Content */}
-      <div className="flex-1 relative z-10">
-        {loading ? (
-          <div className="flex justify-center py-12">
-            <motion.div
-              className="w-8 h-8 border-2 border-[var(--accent-dream)] border-t-transparent rounded-full"
-              animate={{ rotate: 360 }}
-              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-            />
+      }
+    >
+      <div className="flex flex-col h-[calc(100vh-64px)]">
+        {/* Search */}
+        <form onSubmit={handleSearch} className="px-4 py-3 border-b border-[var(--glass-border)] bg-[var(--bg-primary)]/80 backdrop-blur-sm">
+          <div className="flex gap-2">
+            <input value={searchQ} onChange={e => { setSearchQ(e.target.value); if (!e.target.value) setFilters({ emotion: "", type: "", pinned: "" }); }}
+              placeholder="Search memories..." className="flex-1 input-field py-2 text-sm" />
+            <motion.button type="submit" disabled={searching} className="glass-strong rounded-xl px-4 py-2 text-sm font-medium transition-colors" whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
+              {searching ? "..." : "🔍"}
+            </motion.button>
           </div>
-        ) : memories.length === 0 ? (
-          <EmptyState onAddMemory={() => setShowCreate(true)} />
-        ) : viewMode === "grid" ? (
-          <GridView
-            memories={memories}
-            currentUserId={currentUserId}
-            onSelect={setSelectedMemory}
-            onPin={handlePin}
-            onFavorite={handleFav}
-            onReact={handleReact}
-          />
-        ) : (
-          <TimelineView
-            groupedMemories={groupedMemories}
-            pinnedMemories={pinnedMemories}
-            currentUserId={currentUserId}
-            onSelect={setSelectedMemory}
-            onPin={handlePin}
-            onFavorite={handleFav}
-            onReact={handleReact}
-          />
-        )}
+        </form>
 
-        {/* Infinite scroll sentinel */}
-        <div ref={bottomRef} className="h-4" />
-        {loadingMore && (
-          <div className="flex justify-center py-4">
-            <motion.div
-              className="w-5 h-5 border-2 border-[var(--accent-dream)] border-t-transparent rounded-full"
-              animate={{ rotate: 360 }}
-              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-            />
-          </div>
-        )}
+        <MemoryFilterBarUltra filters={filters} onChange={setFilters} />
+
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto relative z-10">
+          {loading ? (
+            <PageSpinner label="Loading memories..." />
+          ) : memories.length === 0 ? (
+            <PageEmpty icon="📸" title="No memories yet" desc="Start capturing your story together." action="Add first memory" onAction={() => setShowCreate(true)} />
+          ) : viewMode === "grid" ? (
+            <GridView memories={memories} currentUserId={currentUserId} onSelect={setSelectedMemory} onPin={handlePin} onFavorite={handleFav} onReact={handleReact} />
+          ) : (
+            <TimelineView groupedMemories={groupedMemories} pinnedMemories={pinnedMemories} currentUserId={currentUserId} onSelect={setSelectedMemory} onPin={handlePin} onFavorite={handleFav} onReact={handleReact} />
+          )}
+          <div ref={bottomRef} className="h-4" />
+          {loadingMore && (
+            <div className="flex justify-center py-4">
+              <motion.div className="w-5 h-5 border-2 border-[var(--accent-dream)] border-t-transparent rounded-full" animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }} />
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Floating add button */}
-      <motion.button
-        onClick={() => setShowCreate(true)}
-        className="fixed bottom-6 right-6 w-14 h-14 rounded-full gradient-mixed shadow-strong flex items-center justify-center text-2xl z-40"
-        whileHover={{ scale: 1.1, rotate: 90 }}
-        whileTap={{ scale: 0.9 }}
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ type: "spring", stiffness: 200 }}
-      >
+      {/* FAB */}
+      <motion.button onClick={() => setShowCreate(true)}
+        className="fixed bottom-6 right-5 w-14 h-14 rounded-full gradient-mixed shadow-strong flex items-center justify-center text-2xl z-40"
+        style={{ boxShadow: "0 0 24px rgba(168,85,247,0.4), 0 8px 32px rgba(0,0,0,0.4)" }}
+        whileHover={{ scale: 1.1, rotate: 90 }} whileTap={{ scale: 0.9 }}
+        initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 200 }}>
         +
       </motion.button>
 
-      {/* Modals */}
-      {showCreate && rel && (
-        <MemoryCreateModalUltra
-          relationshipId={rel.id}
-          onCreated={(m) => setMemories((prev) => [m, ...prev])}
-          onClose={() => setShowCreate(false)}
-        />
-      )}
-
-      {selectedMemory && (
-        <MemoryDetailModalUltra
-          memory={selectedMemory}
-          currentUserId={currentUserId}
-          onClose={() => setSelectedMemory(null)}
-          onUpdated={updateMemory}
-          onDeleted={removeMemory}
-        />
-      )}
-    </div>
+      {showCreate && rel && <MemoryCreateModalUltra relationshipId={rel.id} onCreated={m => setMemories(prev => [m, ...prev])} onClose={() => setShowCreate(false)} />}
+      {selectedMemory && <MemoryDetailModalUltra memory={selectedMemory} currentUserId={currentUserId} onClose={() => setSelectedMemory(null)} onUpdated={updateMemory} onDeleted={removeMemory} />}
+    </PageLayout>
   );
 }
 
@@ -484,60 +351,6 @@ function DateSeparator({ date }) {
           {date}
         </span>
       </div>
-    </motion.div>
-  );
-}
-
-// Empty state
-function EmptyState({ onAddMemory }) {
-  return (
-    <motion.div
-      className="flex flex-col items-center justify-center py-20 px-4"
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5 }}
-    >
-      <motion.div
-        className="text-7xl mb-4"
-        animate={{
-          scale: [1, 1.1, 1],
-          rotate: [0, 5, -5, 0],
-        }}
-        transition={{
-          duration: 3,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      >
-        📖
-      </motion.div>
-      <motion.p
-        className="text-[var(--text-secondary)] text-base mb-2"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-      >
-        No memories yet ❤️
-      </motion.p>
-      <motion.p
-        className="text-[var(--text-tertiary)] text-sm mb-6"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-      >
-        Start capturing your story
-      </motion.p>
-      <motion.button
-        onClick={onAddMemory}
-        className="btn-primary btn-base"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-      >
-        Add first memory
-      </motion.button>
     </motion.div>
   );
 }

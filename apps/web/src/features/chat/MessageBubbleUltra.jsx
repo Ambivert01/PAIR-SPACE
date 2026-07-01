@@ -66,12 +66,9 @@ export default function MessageBubbleUltra({
       )}
 
       <motion.div
-        className={`flex flex-col ${isOwn ? "items-end" : "items-start"} mb-1 group`}
+        className={`flex flex-col ${isOwn ? "items-end" : "items-start"} mb-0.5 group`}
         onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => {
-          setIsHovered(false);
-          setShowReactPicker(false);
-        }}
+        onMouseLeave={() => { setIsHovered(false); setShowReactPicker(false); }}
         {...messageSend}
       >
         {/* Reply context */}
@@ -118,11 +115,19 @@ export default function MessageBubbleUltra({
 
           {/* Message bubble */}
           <motion.div
-            className={`max-w-[72%] rounded-2xl overflow-hidden text-sm ${
+            className={`max-w-[75%] sm:max-w-[65%] rounded-2xl overflow-hidden text-sm ${
               isOwn
-                ? "gradient-love text-white rounded-br-sm shadow-soft"
-                : "glass text-white rounded-bl-sm"
+                ? "rounded-br-sm text-white shadow-soft"
+                : "rounded-bl-sm text-white"
             } ${isMedia ? "cursor-pointer" : ""}`}
+            style={isOwn ? {
+              background: "linear-gradient(135deg, var(--accent-love), var(--accent-love-soft))",
+              boxShadow: "0 4px 20px rgba(255,93,126,0.25)"
+            } : {
+              background: "rgba(255,255,255,0.08)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              backdropFilter: "blur(12px)"
+            }}
             onClick={() =>
               isMedia &&
               setViewerMedia({
