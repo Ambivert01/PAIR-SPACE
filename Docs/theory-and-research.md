@@ -1,3 +1,14 @@
+## 📚 Documentation Navigation
+
+| Document | Status |
+|----------|--------|
+| 🏠 **[README](../README.md)** | Home |
+| 🚀 **[Setup Guide](./setup.md)** | Previous Document |
+| 🧠 **Theory & Research** | **You are here** |
+
+---
+
+
 # PairSpace: A Research-Based Examination of Digital Intimacy Infrastructure for Distributed Relationships
 
 ---
@@ -7,6 +18,19 @@
 PairSpace is not, in the framing of this document, "an app with relationship features." It is infrastructure built around a single, narrow unit of design: the dyad — exactly two people who have agreed to share a digital space. Most communication technology is built for one of two purposes: broadcast (one-to-many, optimized for reach) or transaction (task-to-completion, optimized for efficiency). Neither purpose maps cleanly onto the actual problem of sustaining one continuous, asymmetric-in-stakes relationship between two specific people over distance and time. This document lays out the structural problems that distance creates for relationships, the theoretical frameworks that explain *why* those problems exist and what kinds of intervention could plausibly address them, and a feature-by-feature account of how PairSpace translates each theory into a concrete mechanism — including the edge cases, failure modes, and open questions that any honest treatment of this design space has to confront.
 
 ---
+
+## Quick Navigation
+
+- Part I — Problem Space
+- Part II — Theoretical Foundations
+- Part III — Problem → Theory → Feature
+- Part IV — Feature Deep Dive
+- Part V — Cross-Cutting Edge Cases
+- Part VI — Comparative Positioning
+- Part VII — Limitations
+- Part VIII — Conclusion
+- Appendix
+
 
 ## Part I — The Problem Space
 
@@ -398,3 +422,13 @@ The central claim of this document is narrower than it might first appear: relat
 **Social Penetration Theory** — the framework (Altman & Taylor) describing intimacy as deepening through gradual, reciprocal self-disclosure.
 
 **Social Presence Theory** — the framework describing the degree to which a communication medium conveys a sense of "actually being with" another person.
+
+---
+
+## Related Documentation
+
+🏠 **[README](../README.md)**
+
+🚀 **[Setup Guide](./setup.md)**
+
+---

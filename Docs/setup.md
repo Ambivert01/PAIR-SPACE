@@ -1,3 +1,15 @@
+## 📚 Documentation Navigation
+
+| Document | Status |
+|----------|--------|
+| 🏠 **[README](../README.md)** | Home |
+| 🚀 **Setup Guide** | **You are here** |
+| 🧠 **[Theory & Research](./theory-and-research.md)** | Next Document |
+
+---
+
+
+
 # PairSpace — Complete Setup, Configuration & Technical Documentation
 ## A → Z Coverage — Everything You Need to Build, Run, and Ship
 
@@ -53,7 +65,7 @@
 ### Step 1: Clone and Install
 
 ```bash
-git clone https://github.com/your-org/pairspace.git
+git clone https://github.com/Ambivert01/PAIR-SPACE.git
 cd PairSpace
 
 # Install all workspaces (apps/web + services/api + root)
@@ -1307,6 +1319,10 @@ await Promise.all(plugins.map(p => p.execute({ relationshipId, type, value }).ca
 
 ---
 
-*Documentation version: 1.0 — Post-full-audit*  
-*Last updated: Complete QA audit + all fixes applied*  
-*Tests: 124 passing | Build: Clean | Theme: Unified Lovable*
+## Continue Reading
+
+➡️ **Next:** [Theory & Research Documentation](./theory-and-research.md)
+
+🏠 **Home:** [README](../README.md)
+
+---

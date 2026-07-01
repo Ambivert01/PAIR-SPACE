@@ -12,6 +12,23 @@
 
 ---
 
+## 📚 Documentation
+
+PairSpace documentation is organized into two comprehensive guides.
+
+| Document | Description |
+|-----------|-------------|
+| 🚀 **[Setup & Technical Documentation](Docs/setup.md)** | Complete setup, configuration, architecture, API reference, deployment, testing and troubleshooting guide. |
+| 🧠 **[Theory & Research Documentation](Docs/theory-and-research.md)** | Research paper covering psychology, communication theories, design decisions, feature rationale and implementation philosophy behind PairSpace. |
+
+> **Recommended reading order**
+>
+> 1. 🚀 Setup & Technical Documentation
+> 2. 🧠 Theory & Research Documentation
+
+---
+
+
 ## What is PairSpace?
 
 PairSpace is a **private relationship app for exactly two people.** Unlike group social networks, every feature is purpose-built for one relationship — a locked, intimate digital space. Think of it as a home you share online: private chat, memories, calls, journals, gifts, games, and daily rituals.
@@ -71,7 +88,7 @@ Designed for **long-distance couples, best friends, and any two people who want 
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/your-org/pairspace.git
+git clone https://github.com/Ambivert01/PAIR-SPACE.git
 cd pairspace
 npm install
 ```
